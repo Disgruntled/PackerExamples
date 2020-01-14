@@ -1,0 +1,51 @@
+{
+    "variables": {
+        "profile": "saml",
+        "region":         "us-east-1"
+    },
+    "builders": [
+        {
+            "ami_name": "liam_honeypot_ami-{{timestamp}}",
+            "profile": "saml",
+            "instance_type": "t2.micro",
+            "source_ami_filter": {
+              "filters": {
+              "virtualization-type": "hvm",
+              "name": "amzn2-ami-hvm-*",
+              "root-device-type": "ebs",
+              "architecture": "x86_64"
+              },
+              "owners": ["137112412989", "591542846629", "801119661308",
+                "102837901569", "013907871322", "206029621532",
+                "286198878708", "443319210888"
+              ],
+              "most_recent": true
+            },
+            "ssh_username": "ec2-user",
+            "type": "amazon-ebs"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+              "sudo yum -y install python3-pip"
+            ]
+          },
+        {
+            "type": "shell",
+            "inline": [
+              "sudo pip3 install ansible"
+            ]
+          },
+          {
+            "type": "file",
+            "source": "./docker_install_playbook.yml",
+            "destination": "/home/ec2-user/"
+        },
+        {
+        "type": "ansible-local",
+        "playbook_file": "./docker_install_playbook.yml"
+      }
+    ]
+}

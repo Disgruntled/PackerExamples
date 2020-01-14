@@ -2,6 +2,7 @@
 ---
     - name: "AWS - Install docker"
       hosts: localhost
+#become: yes assumes the unix user that is running ansible has sudo access
       become: yes
       tasks:
         - name: Update all packages
@@ -17,12 +18,11 @@
             update_cache: yes
           vars:
             packages:
-            - python-pip
             - yum-utils
             - device-mapper-persistent-data
             - lvm2
-            - amazon-linux-extras.noarch
 
+#requirement for the docker_container ansible component
         - pip:
             name:
               - docker
@@ -31,14 +31,14 @@
           shell: yum-config-manager --enable extras
     
         - name: Install docker-ce (centos) via amazon-linux-extras packages
-          shell: "amazon-linux-extras install docker=18.06.1 -y"
+          shell: "amazon-linux-extras install docker -y"
 
         - name: Enable Docker CE service at startup
           service:
             name: docker
             state: started
             enabled: yes
-            
+
 #Pulls and starts the specified docker container. Technical does not need to start it.
         - name: Start container
           docker_container:
