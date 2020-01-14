@@ -1,6 +1,0 @@
-- name: Start container, connect to network and link
-  docker_container:
-    name: honeypot
-    image: liamwadman/forever200:latest
-    ports:
-        - "80:80"

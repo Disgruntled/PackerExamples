@@ -32,17 +32,19 @@
     
         - name: Install docker-ce (centos) via amazon-linux-extras packages
           shell: "amazon-linux-extras install docker=18.06.1 -y"
-    
+
         - name: Enable Docker CE service at startup
           service:
             name: docker
             state: started
             enabled: yes
-    
-        - name: Start container, connect to network and link
+            
+#Pulls and starts the specified docker container. Technical does not need to start it.
+        - name: Start container
           docker_container:
             name: honeypot
             image: liamwadman/forever200:latest
             ports:
               - "80:80"
-    
+
+...

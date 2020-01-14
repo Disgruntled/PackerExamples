@@ -36,13 +36,13 @@
         {
             "type": "shell",
             "inline": [
-              "sudo yum -y install python2-pip"
+              "sudo yum -y install python3-pip"
             ]
           },
         {
             "type": "shell",
             "inline": [
-              "sudo pip install ansible==2.7.9"
+              "sudo pip3 install ansible"
             ]
           },
           {
@@ -53,11 +53,6 @@
         {
         "type": "ansible-local",
         "playbook_file": "./docker_install_playbook.yml"
-      }
-      ,
-        {
-        "type": "ansible-local",
-        "playbook_file": "./docker_start_forever200.yml"
       }
     ]
 }
