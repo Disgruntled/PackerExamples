@@ -1,6 +1,6 @@
 {
     "variables": {
-        "profile": "saml",
+        "profile": "default",
         "region":         "us-east-1"
     },
     "builders": [
@@ -26,6 +26,18 @@
         }
     ],
     "provisioners": [
+      {
+        "type": "shell",
+        "inline": [
+          "sudo yum -y install python3"
+        ]
+      },
+      {
+        "type": "shell",
+        "inline": [
+          "sudo yum -y install python-pip"
+        ]
+      },
         {
             "type": "shell",
             "inline": [

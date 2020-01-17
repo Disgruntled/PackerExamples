@@ -4,6 +4,8 @@ Herein, we have two packer examples. One simple and turnkey, the second one does
 
 This script assumes that you have S3:Read/WRite in one bucket, and EC2:FullACcess, The ability to modify IAM policies and roles, and Pass Iam Roles(instance profiles) to EC2 instance. Basically, you are an AWS Admin.
 
+All instance sizes used are t2.micro so this is eligible for the AWS free tier.
+
 
 ## 1) Using Packer as a local build agent
 
@@ -15,6 +17,28 @@ packer build over_the_internet.json
 Uses the latest & greatest 64  bit AL2 AMI as a base. Uses ansible to install a really simple docker container I made for all my tests. Also on my github!
 
 I chose ansible as my primary configuration tool here so I would learn something new, this was my first go at ansible and I rather like it.
+
+variables in over_the_internet.json can be changed to your liking.
+
+ec2_userdata.sh is provided if you want to tell ec2 to start up the container on boot. you can start the EC2 instance you made with:
+
+```bash
+aws ec2 run-instances \
+    --image-id $YOUR_AM_ID_ \
+    --count 1 \
+    --instance-type t2.micro \
+    --user-data file://ec2_userdata.sh \
+    --subnet-id $YOUR_SUBNET \
+    --security-group-ids $YOUR_SG\
+    --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=ContainerServer}]' \
+    --associate-public-ip-address \
+    --profile $PROFILE \
+    --region $REGION
+```
+
+The above assumes your VPC has an internet gateway (IGW), and the SG allows port 80 inbound.
+
+$PROFILE being optional if you're using environment variables or instance meta-data store credentials.
 
 ## 2) Using packer as a remote build agent.
 
@@ -44,7 +68,9 @@ Example for just building a server:
 build_server.sh -r us-east-1 -b liampackerbucket -p saml
 ```
 
-These should ALL be done in the same directory, as build_server needs to query your terraform statefile to get it's assets.
+There is no error checking on build_Server.sh, so please make sure you're using a correct profile, bucket that you own and can read/write, and a real aws region.
+
+Terraform and build_server should be ran in the same directory. As build_server needs to query your terraform statefile to get it's assets.
 
 RemoteBuildAgent has SSM on it, so you can 'aws ssm start-session' into it.
 
@@ -54,12 +80,20 @@ RemoteBuildAgent's currently do not die. if you are done with them, you can stop
 
 Packer log files are currently written to /var/tmp/packer.log on RemoteBuildAgent. Currently you will have to retreive your new AMI from this.
 
-remote_build_script.sh has a bucket name hardcoded at  on line 8. This will be remediated later.
+remote_build_script.sh has a bucket name hardcoded at  on line 8 and 16. This will be remediated later.
 
 I consciously made it so that the bucket exists outside of terraform so that it persist across environmental re-creations.
 
 ssm-user is a sudoer, remember.
 
+I always try to use the latest 64bit Amazon Linux 2 as a base.
+
+Please note that remote_build_agent has a very high level of privilege, and this introduces a not-insignificant risk.
+I would never advise taking this as-is to a prod environment without considerations for how these IAM entitlements impact your organization.
+
+
 ## Notes
 
 I learned a ton doing this and had a lot of fun. I hope it is useful for someone.
+
+Please check out the terraform, packer and AWS docs for more info.

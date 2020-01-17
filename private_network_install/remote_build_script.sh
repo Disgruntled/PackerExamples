@@ -13,4 +13,6 @@ if [ ! -e packer ]; then wget https://releases.hashicorp.com/packer/1.5.1/packer
 
 ./packer build -var-file="/var/tmp/vars.json" private_network.json >> /var/tmp/packer.log
 
-#Todo, persist these logs somewhere, shut down this insance
+aws s3 cp /var/tmp/packer.log s3://liampackerbucket/packer/ 
+
+#Todo, persist these logs somewhere better
