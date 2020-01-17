@@ -76,7 +76,13 @@ RemoteBuildAgent has SSM on it, so you can 'aws ssm start-session' into it.
 
 RemoteBuildAgent executes "remote_build_script.sh" on boot, passed in via EC2 userdata
 
-RemoteBuildAgent's currently do not die. if you are done with them, you can stop/terminate the instance but they will attempt to build again at boot.
+RemoteBuildAgent's currently do not die by themselves. if you are done with them, you can stop/terminate the instance but they will attempt to build again at boot. You can stop with these cli's, or through the console:
+
+```bash
+aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId}" --filters "Name=tag:Name,Values=RemoteBuildAgent" --output text
+aws ec2 stop-instances --instance-ids $YOUR_INSTANCE_IDS
+```
+
 
 Packer log files are currently written to /var/tmp/packer.log on RemoteBuildAgent. Currently you will have to retreive your new AMI from this.
 
@@ -88,7 +94,7 @@ ssm-user is a sudoer, remember.
 
 I always try to use the latest 64bit Amazon Linux 2 as a base.
 
-Please note that remote_build_agent has a very high level of privilege, and this introduces a not-insignificant risk.
+Please note that RemoteBuildAgent has a very high level of privilege, and this introduces a not-insignificant risk.
 I would never advise taking this as-is to a prod environment without considerations for how these IAM entitlements impact your organization.
 
 
