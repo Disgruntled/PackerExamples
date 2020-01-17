@@ -1,16 +1,19 @@
 {
     "variables": {
-        "profile": "saml",
-        "region":         "us-east-1"
+        "region":  "{{env `REGION`}}",
+        "SUBNET": "{{env `SUBNET`}}",
+        "VPC": "{{env `VPC`}}",
+        "SG":"{{env `SG`}}0"
     },
     "builders": [
         {
+            "region": "{{user `REGION`}}",
             "ami_name": "liam_honeypot_ami-{{timestamp}}",
-            "profile": "saml",
             "instance_type": "t2.micro",
             "associate_public_ip_address" : "false",
-            "vpc_id":"vpc-0891d2a79dd4f5930",
-            "subnet_id": "subnet-06bc27be845c124e0",
+            "vpc_id":"{{user `VPC`}}",
+            "subnet_id": "{{user `SUBNET`}}",
+            "security_group_id":"{{user `SG`}}",
             "source_ami_filter": {
               "filters": {
               "virtualization-type": "hvm",
@@ -29,6 +32,18 @@
         }
     ],
     "provisioners": [
+      {
+        "type": "shell",
+        "inline": [
+          "sudo yum -y install python3"
+        ]
+      },
+      {
+        "type": "shell",
+        "inline": [
+          "sudo yum -y install python-pip"
+        ]
+      },
         {
             "type": "shell",
             "inline": [
@@ -44,7 +59,7 @@
           {
             "type": "file",
             "source": "./docker_install_playbook.yml",
-            "destination": "/home/ec2-user/"
+            "destination": "/var/tmp/"
         },
         {
         "type": "ansible-local",
