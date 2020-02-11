@@ -3,3 +3,6 @@
 *.plan
 .terraform
 .terraform.tfstate.lock.info
+vars.json
+remote_build_script_temp.sh
+.DS_store

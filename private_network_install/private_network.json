@@ -3,7 +3,7 @@
         "region":  "{{env `REGION`}}",
         "SUBNET": "{{env `SUBNET`}}",
         "VPC": "{{env `VPC`}}",
-        "SG":"{{env `SG`}}0"
+        "SG":"{{env `SG`}}"
     },
     "builders": [
         {

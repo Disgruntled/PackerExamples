@@ -6,6 +6,15 @@ This script assumes that you have S3:Read/WRite in one bucket, and EC2:FullACces
 
 All instance sizes used are t2.micro so this is eligible for the AWS free tier.
 
+This works with packer 1.5.1, with the json config, NOT HCL.
+
+## Requirements
+
+Packet 1.5.1
+Terraform >= 0.12
+aws cli
+bash
+
 
 ## 1) Using Packer as a local build agent
 
@@ -52,23 +61,27 @@ Invocation of terraform to build your network:
 
 ```bash
 terraform init
-terraform -out packer_builder.plan -var="region=$REGION" -var="profile=$PROFILE"
+terraform plan -out packer_builder.plan -var="region=$REGION" -var="profile=$PROFILE"
+terraform apply "packer_builder.plan"
 ```
 
 Example:
 
 ```bash
 terraform init
-terraform -out packer_builder.plan -var="region=us=east=1" -var="profile=saml"
+terraform plan -out packer_builder.plan -var="region=us=east=1" -var="profile=saml"
+terraform apply "packer_builder.plan"
 ```
 
 Example for just building a server:
 
 ```bash
-build_server.sh -r us-east-1 -b liampackerbucket -p saml
+build_server.sh -r us-east-1 -p saml
 ```
 
 There is no error checking on build_Server.sh, so please make sure you're using a correct profile, bucket that you own and can read/write, and a real aws region.
+
+This script assumes the credentials assigned to the 'saml' AWS profile have sufficient entitlements to do their job. Basically EC2/IAM:*, SSM:* and S3:*.
 
 Terraform and build_server should be ran in the same directory. As build_server needs to query your terraform statefile to get it's assets.
 
@@ -84,7 +97,9 @@ aws ec2 stop-instances --instance-ids $YOUR_INSTANCE_IDS
 ```
 
 
-Packer log files are currently written to /var/tmp/packer.log on RemoteBuildAgent. Currently you will have to retreive your new AMI from this.
+
+
+Packer log files are currently written to /var/tmp/packer.log on RemoteBuildAgent and on the s3 bucket made by terraform under the /packer/timestamp.log object.
 
 remote_build_script.sh has a bucket name hardcoded at  on line 8 and 16. This will be remediated later.
 

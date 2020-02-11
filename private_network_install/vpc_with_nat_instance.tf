@@ -275,6 +275,16 @@ sudo systemctl stop rpcbind
   }
 }
 
+resource "aws_s3_bucket" "log_bucket" {
+  bucket_prefix = "packerlogbucket"
+  acl    = "private"
+
+  tags = {
+    Name        = "Packer Log Bucket"
+  }
+}
+
+
 output "private_subnet_id" {
   value = aws_subnet.tf_priv_subnet.id
 }
@@ -293,4 +303,8 @@ output "build_security_group" {
 
 output "instance_profile" {
   value = aws_iam_instance_profile.ssm_instance_profile_tf.name
+}
+
+output "log_bucket" {
+  value = aws_s3_bucket.log_bucket.id
 }
