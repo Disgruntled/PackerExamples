@@ -89,12 +89,19 @@ RemoteBuildAgent has SSM on it, so you can 'aws ssm start-session' into it.
 
 RemoteBuildAgent executes "remote_build_script.sh" on boot, passed in via EC2 userdata
 
-RemoteBuildAgent's currently do not die by themselves. if you are done with them, you can stop/terminate the instance but they will attempt to build again at boot. You can stop with these cli's, or through the console:
+RemoteBuildAgent's currently do not die by themselves. if you are done with them, you can stop/terminate the instance but they will attempt to build again at boot. You can stop with these cli's, or through the cohttps://github.com/Disgruntled/PackerExamples.ginsole:
 
 ```bash
 aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId}" --filters "Name=tag:Name,Values=RemoteBuildAgent" --output text
 aws ec2 stop-instances --instance-ids $YOUR_INSTANCE_IDS
 ```
+
+or one line (using my profile/region)
+
+```bash
+aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId}" --filters "Name=tag:Name,Values=RemoteBuildAgent" --profile saml --region us-east-1 --output text | xargs aws ec2 terminate-instances --region us-east-1 --profile saml --instance-ids
+```
+
 
 
 
