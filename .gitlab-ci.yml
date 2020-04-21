@@ -1,5 +1,5 @@
 default:
-  image: hashicorp/packer
+  image: busybox
   before_script:
     - echo Hello World
 
