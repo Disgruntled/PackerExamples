@@ -1,6 +1,9 @@
-image: hashicorp/packer
+default:
+  image: hashicorp/packer
+  before_script:
+    - echo Hello World
 
 job:
   script:
-  - "cd over_the_internet"
-  - "packer build over_the_internet.json"
+  - cd over_the_internet
+  - packer build over_the_internet.json
