@@ -2,14 +2,12 @@
     "variables": {
         "profile": "default",
         "region":         "us-east-1",
-        "aws_access_key": "",
-        "aws_secret_key": ""
+        "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
     },
     "builders": [
         {
             "ami_name": "liam_honeypot_ami-{{timestamp}}",
-            "access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
-            "secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
             "instance_type": "t2.micro",
             "source_ami_filter": {
               "filters": {
