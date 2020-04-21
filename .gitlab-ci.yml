@@ -1,5 +1,5 @@
 default:
-  image: golang
+  image: ubuntu
   before_script:
     - echo Hello World
 
