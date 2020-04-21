@@ -1,7 +1,4 @@
 image: hashicorp/packer
 
-before_script:
-  - "pip3 install -r requirements3.txt"
-
 job1:
   script: "packer build ./over_the_internet/over_the_internet.json"
