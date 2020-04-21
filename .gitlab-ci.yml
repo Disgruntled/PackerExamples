@@ -2,6 +2,9 @@ default:
   image: ubuntu
   before_script:
     - echo Hello World
+    - sudo apt-get update
+    - sudo apt-get install wget
+    - sudo apt-get ca-certificates
 
 job:
   script:
